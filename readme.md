@@ -7,9 +7,6 @@ Designed for real servers, not laptops:
 - Automatically applies the correct `smartctl -d <type>` per disk
 - Prevents alert spam with **per-device cooldowns**
 - Fails loudly if alerting is misconfigured (no silent failures)
-
-If a disk starts reallocating sectors, you’ll know before ZFS does.
-
 ---
 
 ## Features
@@ -122,15 +119,8 @@ sudo crontab -e
 ```
 
 ```cron
-0 * * * * root /bin/bash -c 'source /etc/smart_pushover.env && /usr/local/sbin/smart_pushover.sh' >/dev/null 2>&1
+0 * * * * /bin/bash -c 'source /etc/smart_pushover.env && /usr/local/sbin/smart_pushover.sh' >/dev/null 2>&1
 ```
-
-### Why this works
-
-- Cron defaults to `/bin/sh` (which does **not** support `source`)
-- Explicitly invoking `/bin/bash` avoids subtle failures
-- Environment variables are guaranteed to load
-
 ---
 
 ## Device Detection
@@ -148,10 +138,6 @@ Example output:
 /dev/sdb -d sat
 /dev/nvme0 -d nvme
 ```
-
-Each device is queried using its correct `-d` type automatically.
-No global overrides. No guessing.
-
 ---
 
 ## Cooldown Logic
@@ -194,9 +180,3 @@ This script is intentionally minimal, but can be extended to:
 - Escalate alert priority as values increase
 - Export JSON for LibreNMS or Prometheus
 - Schedule and monitor SMART self-tests
-
----
-
-## License
-
-MIT (or whate
